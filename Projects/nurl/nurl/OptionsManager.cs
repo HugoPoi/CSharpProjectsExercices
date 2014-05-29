@@ -9,7 +9,10 @@ namespace nurl
 		private OptionSet parser;
 		private System.IO.TextWriter output;
 		public string Url { get; set;}
+		public string FilePath { get; set;}
 		public bool ShowHelp { get; set;}
+		public int TestTimes { get; set;}
+		public bool TestAvgEnable { get; set;}
 
 		public OptionsManager (System.IO.TextWriter _output)
 		{
@@ -18,6 +21,8 @@ namespace nurl
 			parser = new OptionSet(){
 				{ "u|url=", "{URL} to get content from",
               		v => Url = v},
+				{ "s|save=", "{FILE} for save the content",
+              		v => FilePath = v},
             	{ "h|help",  "show help and exit", 
               		v => ShowHelp = v != null },
 			};
@@ -39,20 +44,42 @@ namespace nurl
 			}
 
 			if (extraOptions.Count == 1) {
-				if(extraOptions[0].Equals("get") && Url.Length != 0)
-				{
-					var httpHandler = new GetHttpContent(output);
-					if(UrlParser.isValidUrl(Url)){
-						httpHandler.GetDataAndWrite(Url);
+				if(UrlParser.isValidUrl(Url)){
+					if(extraOptions[0].Equals("get"))
+					{
+						GetHttpContent httpHandler;
+						if(FilePath != null)
+						{
+							var file = new System.IO.StreamWriter(FilePath);
+							httpHandler = new GetHttpContent(file);
+							httpHandler.GetDataAndWrite(Url);
+							file.Close();
+						}else{
+							httpHandler = new GetHttpContent(output);
+							httpHandler.GetDataAndWrite(Url);
+						}
+
+						return;
 					}
-					return;
+					if(extraOptions[0].Equals("test"))
+					{
+
+					}
 				}
 			}
 
 			helpMessage();
 		}
 		private void helpMessage(){
-			output.Write("this is the help message");
+			output.Write(@"
+nurl is downloader and printer tool for the Web, similar to wget.
+2 modes are available for now.
+usage :
+nurl get -url {URL}
+nurl get -url {URL} -save {file}
+nurl test -url {URL} -times 5
+nurl test -url {URL} -times 5 -avg
+");
 		}
 	}
 }

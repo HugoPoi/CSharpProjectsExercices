@@ -7,12 +7,12 @@ namespace nurl
 	public class TestGetHttpContent
 	{
 		[Test()]
-		public void TestCase ()
+		public void GetHttpIsWorkingOnHugoPoiNet ()
 		{
 			var o = new System.IO.StringWriter();
 			var httpHandler = new GetHttpContent(o);
-			httpHandler.GetDataAndWrite("http://api.openweathermap.org/data/2.5/weather?q=paris&units=metric");
-			Assert.IsTrue(o.ToString().StartsWith("{\"coord\":{\"lon\":2.35,\"lat\":48.85}"));
+			httpHandler.GetDataAndWrite("http://blog.hugopoi.net");
+			Assert.IsTrue(o.ToString().StartsWith("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">"));
 		}
 	}
 }

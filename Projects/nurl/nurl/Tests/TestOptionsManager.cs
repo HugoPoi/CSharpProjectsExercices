@@ -29,8 +29,18 @@ namespace nurl
 		{
 			var o = new System.IO.StringWriter();
 			var con = new OptionsManager(o);
-			con.parseOption(new []{ "get","-url", "http://test.fr" });
-			Assert.AreEqual("<h1>Hello World</h1>", o.ToString());
+			con.parseOption(new []{ "get","-url", "http://blog.hugopoi.net" });
+			Assert.IsTrue(o.ToString().StartsWith("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">"));
+		}
+		[Test]
+		public void GetUrlToFile ()
+		{
+			var o = new System.IO.StringWriter();
+			var con = new OptionsManager(o);
+			con.parseOption(new []{ "get","-url", "http://blog.hugopoi.net", "-save", "test.txt"});
+			Assert.IsTrue((new System.IO.StreamReader("test.txt")).ReadToEnd().StartsWith("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">"));
+			(new System.IO.FileInfo("test.txt")).Delete();
+			//Assert.IsFalse((new System.IO.FileInfo("test.txt")).Exists());
 		}
 	}
 }
