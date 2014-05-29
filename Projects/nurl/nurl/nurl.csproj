@@ -35,14 +35,25 @@
     <Reference Include="nunit.framework">
       <Package>mono-nunit</Package>
     </Reference>
+    <Reference Include="NDesk.Options">
+      <HintPath>..\packages\NDesk.Options.0.2.1\lib\NDesk.Options.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="TestUrlParser.cs" />
     <Compile Include="UrlParser.cs" />
-    <Compile Include="ConsoleManager.cs" />
     <Compile Include="GetHttpContent.cs" />
+    <Compile Include="OptionsManager.cs" />
+    <Compile Include="Tests\TestOptionsManager.cs" />
+    <Compile Include="Tests\TestUrlParser.cs" />
+    <Compile Include="Tests\TestGetHttpContent.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Tests\" />
+  </ItemGroup>
 </Project>

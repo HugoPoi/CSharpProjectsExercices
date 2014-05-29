@@ -6,7 +6,8 @@ namespace nurl
 	{
 		public static void Main (string[] args)
 		{
-			Console.WriteLine ("Hello World!");
+			var App = new OptionsManager(Console.Out);
+			App.parseOption(args);
 		}
 	}
 }

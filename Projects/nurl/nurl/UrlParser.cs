@@ -6,8 +6,12 @@ namespace nurl
 	{
 		public static bool isValidUrl (string url)
 		{
-			var parsedUrl = new Uri(url);
-			return (parsedUrl.Scheme == Uri.UriSchemeHttp);
+			try {
+				var parsedUrl = new Uri (url);
+				return (parsedUrl.Scheme == Uri.UriSchemeHttp);
+			} catch (System.UriFormatException) {
+				return false;
+			}
 		}
 	}
 }
