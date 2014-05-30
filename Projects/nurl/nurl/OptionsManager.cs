@@ -10,19 +10,26 @@ namespace nurl
 		private System.IO.TextWriter output;
 		public string Url { get; set;}
 		public string FilePath { get; set;}
-		public bool ShowHelp { get; set;}
-		public int TestTimes { get; set;}
-		public bool TestAvgEnable { get; set;}
+		public bool ShowHelp = false;
+		public int TestTimes = 5;
+		public bool TestAvgEnable = false;
 
 		public OptionsManager (System.IO.TextWriter _output)
 		{
 			output = _output;
-			ShowHelp = false;
 			parser = new OptionSet(){
 				{ "u|url=", "{URL} to get content from",
               		v => Url = v},
-				{ "s|save=", "{FILE} for save the content",
+				{ "s|save=", "{FILE} for save the content.\n" +
+					"",
               		v => FilePath = v},
+				{ "t|times=", 
+                "the number of {TIMES} to mesure get time.\n" + 
+                    "require test mode, this must be an integer.",
+              		(int v) => TestTimes = v },
+				{ "a|avg",  "show average times.\n" +
+					"require test mode",
+              		v => TestAvgEnable = v != null },
             	{ "h|help",  "show help and exit", 
               		v => ShowHelp = v != null },
 			};
@@ -63,7 +70,12 @@ namespace nurl
 					}
 					if(extraOptions[0].Equals("test"))
 					{
-
+						var httpHandler = new GetHttpContent(output);
+						httpHandler.TestTimes(Url, TestTimes);
+						if(TestAvgEnable){
+							output.WriteLine(String.Format("Average {0} ms", Math.Round(httpHandler.AverageTime.TotalMilliseconds,2)));
+						}
+						return;
 					}
 				}
 			}
@@ -71,10 +83,15 @@ namespace nurl
 			helpMessage();
 		}
 		private void helpMessage(){
-			output.Write(@"
-nurl is downloader and printer tool for the Web, similar to wget.
+			output.Write(@"nurl is downloader and printer tool for the Web, similar to wget.
 2 modes are available for now.
-usage :
+Usage : nurl {get|test} -url {URL} [OPTIONS]
+Options :
+");
+			parser.WriteOptionDescriptions(output);
+			output.Write(
+@"
+Exemples :
 nurl get -url {URL}
 nurl get -url {URL} -save {file}
 nurl test -url {URL} -times 5
